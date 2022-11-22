@@ -1,16 +1,16 @@
-const{ MongoClient}=require("mongodb");
-//const MongoClient=require("mongodb");
+const mongoose=require("mongoose");
+const Ad = require("./models/ad.model");
+
 const url="mongodb://localhost:27017";
 const database ="Data";
-const client = new MongoClient(url);
+
+mongoose.connect(url + '/' + database);
+const db = mongoose.connection;
+db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
 async function getData(query)
 {
-    let result=await client.connect();
-    let db=result.db(database);
-    let collection=db.collection("ads");
-    let response=await collection
-        .aggregate([
+    var response = await Ad.aggregate([
             {
                 $match: {
                     $or: [
@@ -20,23 +20,12 @@ async function getData(query)
                         {'company.name': {$regex: query, $options: 'i'}},
                         {'company.url': {$regex: query, $options: 'i'}},
                     ],
-                },
-            },
-            {
-                $lookup: {
-                    from: 'companies',
-                    localField: 'companyId',
-                    foreignField: '_id',
-                    as: 'company'
                 }
-            }, {
-                $unwind: "$company"
             }
-        ])  
- 
-    
-        
-        .toArray();
+        ])
+        .lookup({ from: 'companies', localField: 'companyId', foreignField: '_id', as: 'company' })
+        .unwind('company')
+        .exec();
     return response;
 }
 

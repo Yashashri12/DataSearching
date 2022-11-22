@@ -26,9 +26,7 @@ const AppProvider = ({ children }) => {
         console.log(error);
       }
     };
-    const removePost=(post_ID)=>{
-        dispatch({type:"REMOVE_POST",payload:post_ID})
-    };
+   
     const searchPost=(searchQuery)=>{
         dispatch({type:"SEARCH_QUERY",payload:searchQuery})
     };
@@ -37,7 +35,7 @@ const AppProvider = ({ children }) => {
     useEffect(() => {
       fetchApiData(`${API}q=${state.query}`);
     }, [state.query]);
-  return <AppContext.Provider value={{...state,removePost,searchPost}}>{children}</AppContext.Provider>;
+  return <AppContext.Provider value={{...state,searchPost}}>{children}</AppContext.Provider>;
 };
 const useGlobleContext=()=>
 {

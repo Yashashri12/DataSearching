@@ -1,15 +1,14 @@
 
 import './App.css';
 import Search from './Search';
-import Stories from './Stories';
+import Ads from './Ads';
 
 function App() {
   
   return (
     < >
     <Search/>
-    
-    <Stories/>
+    <Ads/>
     </>
   );
 }
